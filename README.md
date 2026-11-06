@@ -1,1 +1,27 @@
-# -kora-AAA
+# كورة برو (نسخة مسطّحة بدون مجلدات)
+
+الملفات: `index.html` (الواجهة) و`server.js` (الخادم) و`teams.js` و`vercel.json` و`package.json`.
+
+## Vercel
+1. أنشئ مستودعاً جديداً على GitHub وارفع هذه الملفات كلها (من «Choose your files»، لا مجلدات).
+2. في Vercel: Add New ← Project ← اختر المستودع ← Framework: **Other** ← أضف في Environment Variables:
+   `API_FOOTBALL_KEY` = مفتاحك، و`COMPS` = `PL,PD,SA` ← Deploy.
+3. افتح `رابطك/healthz`: يجب أن يظهر `"provider":"api-football"`.
+4. (اختياري) لحفظ نقاط المسابقة: Storage ← Upstash Redis ← اربطه بالمشروع ← Redeploy.
+
+## ربط المفتاح من داخل التطبيق (الأسهل)
+افتح التطبيق ← ⚙️ الإعدادات ← «ربط مصدر البيانات» ← الصق المفتاح ← اختبار ← حفظ.
+يتعرّف التطبيق تلقائياً على نوع المفتاح:
+- **API-Football:** يحتاج خطة مدفوعة لبيانات الموسم الحالي (المجانية تغطي 2021-2023 فقط). يدعم الدوري السعودي والتشكيلات وصور اللاعبين.
+- **football-data.org:** مجاني ويغطي الموسم الحالي للدوري الإنجليزي والإسباني ودوري الأبطال، بدون الدوري السعودي وبتفاصيل أقل.
+
+## استضافة عادية (Koyeb وغيرها)
+أمر التشغيل `npm start` ونفس المتغيرات.
+
+## الربط مع livescoreFootball (جديد)
+التطبيق صار يقرأ البيانات من واجهة `livescoreFootball` (`/get/soccer`) — بلا مفتاح.
+- الافتراضي: `https://worldcup26.ir`؛ ولاستخدام خادمك الخاص ضع `LIVESCORE_URL=https://your-host`.
+- الدوريات: PL=eng.1 ، PD=esp.1 ، SA=ksa.1 ، CL=uefa.champions (تأكد أنها متوفرة في `/get/soccer/leagues`).
+- الأولوية: `MOCK=1` ← `LIVESCORE_URL` ← مفتاح API-Football/football-data ← livescore الافتراضي.
+- المتاح: المباريات والنتائج الحية، الترتيب، الأحداث (أهداف/بطاقات/تبديلات)، الإحصائيات، التشكيلات، والفرق. غير متاح: صفحة اللاعب وتوقعات الفوز.
+- `/healthz` يعرض `"provider":"livescore"`.
